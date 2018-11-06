@@ -1,7 +1,7 @@
 import os
 from telebot import TeleBot
-from ticket_monitor_bot.client.models import User, States
-from ticket_monitor_bot.interface import utils
+from client.models import User, States
+from interface import utils
 
 TOKEN = os.environ.get('BOT_TOKEN')
 

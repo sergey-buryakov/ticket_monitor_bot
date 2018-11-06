@@ -1,5 +1,5 @@
 from telebot import types
-from ticket_monitor_bot.client.uzclient import Client
+from client.uzclient import Client
 from datetime import date as Date
 import re
 

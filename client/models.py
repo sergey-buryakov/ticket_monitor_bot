@@ -1,4 +1,4 @@
-from ticket_monitor_bot.client import utils
+from client import utils
 from enum import Enum
 
 

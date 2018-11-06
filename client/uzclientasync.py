@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
-from ticket_monitor_bot.client.models import Train, Station, Wagon
-from ticket_monitor_bot.client.exeptions import HTTPError, ResponseError
+from client.models import Train, Station, Wagon
+from client.exeptions import HTTPError, ResponseError
 from itertools import chain
 
 
