@@ -1,10 +1,10 @@
-from telebot import types
-from client.uzclient import Client
-from datetime import date as Date
 import re
+from datetime import date as Date
+from aiogram import types
+from client.uzclientasync import Client
 
 
-client = Client()
+CLIENT = Client()
 
 
 def date_check(date_str, user):
@@ -26,9 +26,9 @@ def date_check(date_str, user):
     return msg
 
 
-def get_trains(user):
+async def get_trains(user):
     msg = ""
-    trains = client.search_trains(user.source_station, user.dest_station, user.date)
+    trains = await CLIENT.search_trains(user.source_station, user.dest_station, user.date)
     for train in trains:
         if train.has_free_places:
             msg += parse_train(train) + "\n"
@@ -41,18 +41,10 @@ def parse_train(train):
     result = '*{}: {} - {}*\n' \
              'Відправлення: {} {}\n' \
              'Прибуття: {} {}\n' \
-             'Час в дорозі: {}\n'.format(
-        train.num,
-        train.from_station,
-        train.to_station,
-        train.departure_date,
-        train.departure_time,
-        train.arrival_date,
-        train.arrival_time,
-        train.travel_time)
+             'Час в дорозі: {}\n'.format(train.num, train.from_station, train.to_station, train.departure_date, train.departure_time, train.arrival_date, train.arrival_time, train.travel_time)
     if train.has_free_places:
         for wagon in train.wagon_types:
-                result += "[{}]({})".format(str(wagon), create_link(train, wagon))
+            result += "[{}]({})".format(str(wagon), create_link(train, wagon))
     return result
 
 
@@ -66,14 +58,14 @@ def create_link(train, wagon_type):
     )
 
 
-def set_station(name_station, user, next_state, dir, success_msg):
+def set_station(name_station, user, next_state, direction, success_msg):
     result = None
     msg = ""
     keyboard = None
     for station in user.stations:
         if station.title == name_station:
             result = station
-            msg = "Станція {}: {}\n\n{}".format(dir, str(station), success_msg)
+            msg = "Станція {}: {}\n\n{}".format(direction, str(station), success_msg)
             user.state = next_state
             keyboard = remove_keyboard()
     if result is None:
@@ -82,10 +74,10 @@ def set_station(name_station, user, next_state, dir, success_msg):
     return msg, result, keyboard
 
 
-def get_list_stations(name_station, user, next_state, success_msg):
+async def get_list_stations(name_station, user, next_state, success_msg):
     keyboard = None
-    user.stations = client.search_stations(name_station)
-    if len(user.stations) == 0:
+    user.stations = await CLIENT.search_stations(name_station)
+    if not user.stations:
         msg = "Спробуй іншу станцію"
     else:
         keyboard = set_keyboard(user.stations)

@@ -1,8 +1,8 @@
-import aiohttp
 import asyncio
+from itertools import chain
+import aiohttp
 from client.models import Train, Station, Wagon
 from client.exeptions import HTTPError, ResponseError
-from itertools import chain
 
 
 class Client:
@@ -23,7 +23,7 @@ class Client:
                 if not resp.status == 200:
                     try:
                         json = await resp.json()
-                    except Exception:  # TODO: narrow exception
+                    except aiohttp.ContentTypeError:
                         json = None
                     raise HTTPError(resp.status, data, json)
                 json = await resp.json()
@@ -37,7 +37,7 @@ class Client:
 
     async def get_first_station(self, station):
         stations = await self.search_stations(station)
-        return stations and stations[0] or None
+        return stations[0] if stations else None
 
     async def search_trains(self, source_station, dest_station, date):
         data = {
