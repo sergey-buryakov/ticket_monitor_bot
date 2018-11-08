@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from itertools import chain
 import aiohttp
 from client.models import Train, Station, Wagon
@@ -18,8 +19,11 @@ class Client:
 
     async def __perform_request(self, endpoint, data={}, params={}):
         full_url = self.__base_address + endpoint
-        async with aiohttp.ClientSession() as session:
+        logging.info("Ready to send request")
+        async with aiohttp.ClientSession(headers=self.__build_headers()) as session:
+            logging.info("session is established")
             async with session.post(full_url, params=params, data=data) as resp:
+                logging.info("Request has been sent to {}".format(full_url))
                 if not resp.status == 200:
                     try:
                         json = await resp.json()
