@@ -24,10 +24,10 @@ class Client:
     async def __perform_request(self, endpoint, data={}, params={}):
         full_url = self.__base_address + endpoint
         logger.info("Ready to send request")
-        async with aiohttp.ClientSession(headers=self.__build_headers()) as session:
-            logger.info("Session is established")
-            async with session.post(full_url, params=params, data=data) as resp:
-                logger.info("Request has been sent to {}".format(full_url))
+        async with aiohttp.ClientSession() as session:
+            logger.info("Session is created")
+            async with session.post(full_url, params=params, data=data, headers=self.__build_headers()) as resp:
+                logger.info("Response received from {}".format(full_url))
                 if not resp.status == 200:
                     try:
                         json = await resp.json()
