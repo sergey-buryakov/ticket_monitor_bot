@@ -5,6 +5,10 @@ import aiohttp
 from client.models import Train, Station, Wagon
 from client.exeptions import HTTPError, ResponseError
 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger("uzclient")
+
 
 class Client:
 
@@ -19,11 +23,11 @@ class Client:
 
     async def __perform_request(self, endpoint, data={}, params={}):
         full_url = self.__base_address + endpoint
-        logging.info("Ready to send request")
+        logger.info("Ready to send request")
         async with aiohttp.ClientSession(headers=self.__build_headers()) as session:
-            logging.info("session is established")
+            logger.info("Session is established")
             async with session.post(full_url, params=params, data=data) as resp:
-                logging.info("Request has been sent to {}".format(full_url))
+                logger.info("Request has been sent to {}".format(full_url))
                 if not resp.status == 200:
                     try:
                         json = await resp.json()

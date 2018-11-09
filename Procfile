@@ -1,1 +1,1 @@
-web: python interface/bot.py
+worker: python interface/bot.py
