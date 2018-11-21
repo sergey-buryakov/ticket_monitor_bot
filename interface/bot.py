@@ -1,5 +1,6 @@
 import os
 import logging
+import aiohttp
 from aiogram import Bot, Dispatcher, executor
 from aiogram.types.message import ContentType
 from client.models import User, States
@@ -14,6 +15,15 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
 users = {}
+
+
+@dp.message_handler(commands=['check'])
+async def send_welcome(message):
+    url = message.get_args()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            msg = resp.status
+    await bot.send_message(message.chat.id, msg)
 
 
 @dp.message_handler(commands=['start'])
