@@ -91,7 +91,17 @@ def remove_keyboard():
 
 
 def set_keyboard(items):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     for item in items:
-        markup.add(str(item))
-    return markup
+        keyboard.add(str(item))
+    return keyboard
+
+
+def set_callback_buttons(items):
+    keyboard = types.InlineKeyboardMarkup()
+    for item in items:
+        keyboard.row()
+        for data, text in item.items():
+            callback_button = types.InlineKeyboardButton(text=text, callback_data=data)
+            keyboard.insert(callback_button)
+    return keyboard
